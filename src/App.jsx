@@ -6,6 +6,7 @@ import QuestionUpload from "./components/QuestionUpload/QuestionUpload.jsx";
 import MarkdownEditor from "./components/QuestionUpload/MarkdownEditor.jsx";
 import QuestionDetails from "./pages/QuestionDetails.jsx";
 import Footer from "./components/Footer.jsx";
+import DSAStudyBot from "./components/Chatbot";
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/editor" element={<MarkdownEditor />} />
         <Route path="/questions/:id" element={<QuestionDetails />} />
       </Routes>
+      <DSAStudyBot />
       <Footer />
     </div>
   );

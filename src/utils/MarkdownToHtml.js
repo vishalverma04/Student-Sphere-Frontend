@@ -7,7 +7,35 @@ export const convertMarkdownToHTML = (md) => {
     // Code blocks (must be processed before inline code)
     html = html.replace(/```(\w+)?\n?([\s\S]*?)```/g, (match, lang, code) => {
       const language = lang || 'text';
-      const trimmedCode = code.trim();
+      let trimmedCode = code.trim();
+      
+      // Style comments based on language
+      if (language) {
+        // Java, JavaScript, C, C++, C#, etc. - // and /* */ comments
+        if (['java', 'javascript', 'js', 'c', 'cpp', 'csharp', 'cs', 'typescript', 'ts', 'go', 'rust', 'swift'].includes(language.toLowerCase())) {
+          // Single line comments //
+          trimmedCode = trimmedCode.replace(/(\/\/.*$)/gm, '<span style="color: #6b7280;">$1</span>');
+          // Multi-line comments /* */
+          trimmedCode = trimmedCode.replace(/(\/\*[\s\S]*?\*\/)/g, '<span style="color: #6b7280;">$1</span>');
+        }
+        // Python, Ruby, Shell - # comments
+        else if (['python', 'py', 'ruby', 'rb', 'shell', 'bash', 'sh'].includes(language.toLowerCase())) {
+          trimmedCode = trimmedCode.replace(/(#.*$)/gm, '<span style="color: #6b7280;">$1</span>');
+        }
+        // HTML, XML - <!-- --> comments
+        else if (['html', 'xml'].includes(language.toLowerCase())) {
+          trimmedCode = trimmedCode.replace(/(<!--[\s\S]*?-->)/g, '<span style="color: #6b7280;">$1</span>');
+        }
+        // CSS - /* */ comments
+        else if (['css'].includes(language.toLowerCase())) {
+          trimmedCode = trimmedCode.replace(/(\/\*[\s\S]*?\*\/)/g, '<span style="color: #6b7280;">$1</span>');
+        }
+        // SQL - -- comments
+        else if (['sql'].includes(language.toLowerCase())) {
+          trimmedCode = trimmedCode.replace(/(--.*$)/gm, '<span style="color: #6b7280;">$1</span>');
+        }
+      }
+      
       // Preserve line breaks in code blocks by replacing them with a placeholder
       const codeWithBreaks = trimmedCode.replace(/\n/g, '###LINEBREAK###');
       return `<div class="code-block-container my-4">
@@ -127,4 +155,3 @@ export const convertMarkdownToHTML = (md) => {
     
     return html;
 };
-
